@@ -1,5 +1,5 @@
 # liri-node-app
 
-command line node app that takes in parameters and gives you back data.
+Liri is a CLI app that allows you to search for information on any song, upcoming concert dates for any artist, and information on any movie.
 
-Can be viewed at: https://albertjgonzalez.github.io/liri-node-app/
+To search for a song, enter 
