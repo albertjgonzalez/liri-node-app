@@ -26,14 +26,28 @@ var searchSpotify = function (track) {
 
 //Bands In Town API
 var request = require('request');
-/*var searchBandsInTown = function(band){
-
-}*/
+var moment = require('moment');
+var searchBandsInTown = function (artist) {
+    var queryURL = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    request(queryURL, function (error, response, body) {
+        var obj = JSON.parse(body);
+        for (var i = 0; obj[i]; i++) {
+           
+                var time = (JSON.stringify(obj[i].datetime)).replace(/['"]+/g, '');
+                console.log('----------------------------------------------------------------------------')
+                console.log('              Venue: ' + JSON.stringify(obj[i].venue.name).replace(/['"]+/g, ''));
+                console.log('              City: ' + JSON.stringify(obj[i].venue.city).replace(/['"]+/g, ''));
+                //console.log('              Link: ' + JSON.stringify(obj[i].url).replace(/['"]+/g, ''));
+                console.log('              Time: ' + moment(time).format('L'));
+        }
+        console.log('----------------------------------------------------------------------------')
+    });
+}
 
 //OMDB API
 var searchOmdb = function (movie) {
-    var queryURL = "http://www.omdbapi.com/?t=" + movie + "&plot=short&apikey=trilogy";
- 
+    var queryURL = "https://www.omdbapi.com/?t=" + movie + "&plot=short&apikey=trilogy";
+
     request(queryURL, { json: true }, (err, res, body) => {
         if (err) { return console.log(err); }
         console.log('----------------------------------------------------------------------------')
@@ -55,20 +69,41 @@ var searchOmdb = function (movie) {
         console.log('----------------------------------------------------------------------------')
 
 
-      });
+    });
 }
+
+//Do what it says
+var fs = require('file-system');
+var random = fs.readFileSync('random.txt', 'utf8');
+var doWhatItSays = function () {
+    var randomParsed = random.split(',');
+    command = randomParsed[0]
+    searchFor = randomParsed[1]
+    runApp()
+}
+
 //API Calls Switch
 var command = process.argv[2];
-var searchFor = process.argv[3];
+var searchFor = process.argv[3];;
+var log
+var runApp = function () {
+    switch (command) {
+        case 'spotify-this-song':
+            searchSpotify(searchFor)
+            break;
+        case 'concert-this':
+            searchBandsInTown(searchFor)
+            break;
+        case 'movie-this':
+            searchOmdb(searchFor)
+            break;
+        case 'do-what-it-says':
+            doWhatItSays()
+            break;
+    };
 
-switch (command) {
-    case 'spotify-this-song':
-        searchSpotify(searchFor)
-        break;
-    case 'concert-this':
-        day = "Monday";
-        break;
-    case 'movie-this':
-        searchOmdb(searchFor)
-        break;
-};
+    log = [command, searchFor + '\n'];
+    fs.appendFile('log.txt', log, (error) => { /* handle error */ });
+
+}
+runApp();
