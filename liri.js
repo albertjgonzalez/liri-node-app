@@ -89,13 +89,23 @@ var log
 var runApp = function () {
     switch (command) {
         case 'spotify-this-song':
+        if(!process.argv[3]){
+            searchSpotify('The Sign')
+        }
+        else(
             searchSpotify(searchFor)
+        )
             break;
         case 'concert-this':
             searchBandsInTown(searchFor)
             break;
         case 'movie-this':
-            searchOmdb(searchFor)
+            if(!process.argv[3]){
+                searchOmdb('mr nobody')
+            }
+            else(
+                searchOmdb(searchFor)
+            )
             break;
         case 'do-what-it-says':
             doWhatItSays()
